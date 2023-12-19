@@ -464,7 +464,7 @@ class VideoClip(Clip):
         program="imageio",
         opt="nq",
         fuzz=1,
-        loop=0,
+        loop=None,
         dispose=False,
         colors=None,
         tempfiles=False,
