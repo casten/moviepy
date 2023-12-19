@@ -420,7 +420,7 @@ def write_gif(
 
 
 def write_gif_with_image_io(
-    clip, filename, fps=None, opt=0, loop=0, colors=None, logger="bar"
+    clip, filename, fps=None, opt=0, loop=None, colors=None, logger="bar"
 ):
     """Writes the gif with the Python library ImageIO (calls FreeImage)."""
     if colors is None:
@@ -443,5 +443,21 @@ def write_gif_with_image_io(
     )
     logger(message="MoviePy - Building file %s with imageio." % filename)
 
-    for frame in clip.iter_frames(fps=fps, logger=logger, dtype="uint8"):
-        writer.append_data(frame)
+    kwargs = { 'duration':1.0/fps,
+               'quantizer':quantizer,
+               'palettesize':colors
+             }
+        
+    if loop is not None:
+        if loop == 0:
+            print("Looping animation forever")
+        else:
+            print(f"Looping {loop+1} times")
+        kwargs['loop'] = loop
+    else:
+        print("Not looping animation")
+
+    writer = imageio.mimsave(
+        filename,
+        list(clip.iter_frames(fps=fps, logger=logger, dtype='uint8')),        
+        **kwargs)
